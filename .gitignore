@@ -1,0 +1,25 @@
+# --- Secrets & Environment ---
+.env
+.env.local
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+
+# --- Virtual Environment ---
+.venv/
+venv/
+ENV/
+
+# --- Data & Logs ---
+*.csv
+*.log
+weather_history.csv
+
+# --- OS Specific ---
+.DS_Store
+
+# --- Local Files ---
+producer-should-be.txt
+producer-simulated.txt
