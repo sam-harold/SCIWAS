@@ -1,6 +1,6 @@
-kafka-python
+kafka-python-ng
 requests
 streamlit
 pandas
-watchdog
 python-dotenv
+watchdog
