@@ -10,7 +10,6 @@ from kafka import KafkaConsumer
 
 load_dotenv()
 
-# --- Configuration ---
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC", "weather_stream")
 KAFKA_ALERT_TOPIC = os.getenv("KAFKA_ALERT_TOPIC", "weather_alerts")
 BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092").split(",")
@@ -30,13 +29,8 @@ if "city_data" not in st.session_state:
 if "alerts" not in st.session_state:
     st.session_state.alerts = []
 
-# NOTE: Local alert logic (WET_CONDITIONS, HEAT_THRESHOLD) removed.
-# We now consume alerts directly from KAFKA_ALERT_TOPIC.
-
-
 @st.cache_resource
 def get_consumer():
-    # Subscribe to BOTH topics: Raw Data and Alerts
     return KafkaConsumer(
         KAFKA_TOPIC,
         KAFKA_ALERT_TOPIC,
@@ -83,10 +77,7 @@ def ingest_messages():
             if len(cd["history"]) > 30:
                 cd["history"].pop(0)
 
-        # --- CASE 2: Alert Data ---
         elif topic == KAFKA_ALERT_TOPIC:
-            # Expected format from consumer_alerts.py:
-            # {"message": "...", "city": "...", "type": "...", "severity": "..."}
             alert_msg = data.get("message")
 
             if alert_msg and alert_msg not in st.session_state.alerts:
@@ -96,7 +87,6 @@ def ingest_messages():
         if count >= max_messages_per_refresh:
             break
 
-    # Keep only the latest 5 alerts
     st.session_state.alerts = st.session_state.alerts[:5]
 
 
@@ -105,7 +95,6 @@ try:
 except Exception as e:
     st.error(f"Kafka error: {e}")
 
-# Alerts section
 if st.session_state.alerts:
     st.subheader("Active Alerts (Streamed from Kafka)")
     for a in st.session_state.alerts:
