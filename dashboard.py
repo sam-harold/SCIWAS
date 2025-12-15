@@ -96,7 +96,7 @@ except Exception as e:
     st.error(f"Kafka error: {e}")
 
 if st.session_state.alerts:
-    st.subheader("Active Alerts (Streamed from Kafka)")
+    st.subheader("Active Alerts")
     for a in st.session_state.alerts:
         st.warning(a)
 
